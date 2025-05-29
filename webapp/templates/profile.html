@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">@{{ profile_user.username }}</h2>
+        {% if user.username == profile_user.username %}
+        <p class="text-muted">This is your profile</p>
+        {% endif %}
+        <hr>
+    </div>
+
+    {% if posts %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for post in posts %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+                <div class="card-body">
+                    <p class="card-text">{{ post.caption }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <span>❤ {{ post.total_likes }} like{{ post.total_likes|pluralize }}</span>
+                    <a href="{% url 'like' post.id %}" class="btn btn-sm btn-outline-danger">Like</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No posts yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

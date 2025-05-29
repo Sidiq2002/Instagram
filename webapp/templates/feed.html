@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Latest Posts</h2>
+
+{% for post in posts %}
+<div class="card mb-4" style="max-width: 600px; margin: auto;">
+    <div class="card-header">
+        <a href="{% url 'user_profile' post.user.username %}" class="text-decoration-none fw-bold">
+            @{{ post.user.username }}
+        </a>
+    </div>
+    <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+
+    <div class="card-body">
+        <p class="card-text">{{ post.caption }}</p>
+
+        <!-- Like button -->
+        <a href="{% url 'like' post.id %}" class="btn btn-outline-danger btn-sm">
+            ❤ {{ post.total_likes }} Like{{ post.total_likes|pluralize }}
+        </a>
+
+        <!-- Comments section -->
+        <hr>
+        <h6>Comments:</h6>
+        <ul class="list-unstyled">
+            {% for comment in post.comments.all %}
+            <li>
+                <strong>{{ comment.user.username }}:</strong> {{ comment.text }}
+            </li>
+            {% empty %}
+            <li class="text-muted">No comments yet.</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Add comment form -->
+        <form method="POST" action="{% url 'comment' post.id %}">
+            {% csrf_token %}
+            <div class="input-group mt-2">
+                <input type="text" name="text" class="form-control" placeholder="Add a comment..." required>
+                <button class="btn btn-primary" type="submit">Post</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% empty %}
+<p class="text-center text-muted">No posts available.</p>
+{% endfor %}
+
+{% endblock %}
